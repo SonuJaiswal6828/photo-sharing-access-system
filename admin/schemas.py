@@ -9,6 +9,10 @@ class AdminResponse(BaseModel):
     id : int
     username : str
     created_at : datetime
-    
+
     class Config:
         from_attributes = True
+
+class AdminLogin(BaseModel):
+    username : str
+    password : str
