@@ -16,4 +16,3 @@ def get_db():
     finally:
         db.close()
 
-    print("Database connected successfully!")
