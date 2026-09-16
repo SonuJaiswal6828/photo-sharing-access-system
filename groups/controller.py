@@ -12,13 +12,13 @@ def generate_unique_group_code(db : Session)-> str:
         if existing is None:
             return code
 
-def create_group(group_data: GroupCreate, db: Session):
+def create_group(group_data: GroupCreate, db: Session, admin_id):
     password = group_data.password
     password_hash = hash_password(password)
 
     group_code = generate_unique_group_code(db)
 
-    group_object = Group(admin_id = group_data.admin_id, group_code = group_code, name = group_data.name, password_hash = password_hash)
+    group_object = Group(admin_id = admin_id, group_code = group_code, name = group_data.name, password_hash = password_hash)
     db.add(group_object)
     db.commit()
     db.refresh(group_object)

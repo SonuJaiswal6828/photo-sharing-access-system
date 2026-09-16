@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from datetime import datetime
 
 class GroupCreate(BaseModel):
-    admin_id : int
     name : str
     password : str
 
