@@ -3,7 +3,11 @@ from sqlalchemy.orm import Session
 from database import get_db
 from access_requests.schemas import AccessRequestCreate, AccessRequestResponse, PendingAccessRequestResponse
 from utils.dependencies import get_current_admin
-from access_requests.controller import create_access_request, get_pending_requests
+from access_requests.controller import (
+    create_access_request,
+    get_pending_requests,
+    approve_access_request
+)
 
 router = APIRouter()
 
@@ -14,3 +18,7 @@ def create_access(request_data: AccessRequestCreate, db: Session = Depends(get_d
 @router.get("/pending", response_model=list[PendingAccessRequestResponse])
 def control_request(db: Session = Depends(get_db), authorized: int = Depends(get_current_admin)):
     return get_pending_requests(db, authorized)
+
+@router.patch("/{request_id}/approve")
+def capprove_request(request_id: int, db: Session = Depends(get_db), authorized: int = Depends(get_current_admin)):
+    return approve_access_request(db, authorized, request_id)

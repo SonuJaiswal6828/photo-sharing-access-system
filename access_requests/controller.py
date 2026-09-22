@@ -6,6 +6,7 @@ from models.group import Group
 from utils.security import verify_password
 from utils.code_generator import generate_random_code
 from datetime import datetime , timedelta
+from models.session import Session as UserSession
 
 def generate_unique_request_code(db : Session)-> str:
     while True:
@@ -55,7 +56,27 @@ def get_pending_requests(db: Session, admin_id):
 
     return result
 
-    
+def approve_access_request(db: Session, admin_id: int, request_id: int):
+    existing = db.query(AccessRequest).filter(AccessRequest.id == request_id).first()
+    if not existing:
+        raise HTTPException(status_code=404, detail="Request not exist")
 
+    if existing.status != "pending":
+        raise HTTPException(status_code=400, detail="Request is not pending")
 
-    
+    group = db.query(Group).filter(Group.id == existing.group_id, Group.admin_id == admin_id).first()
+    if not group:
+        raise HTTPException(status_code=403, detail="You are not authorized to approve this request")
+
+    if existing.expires_at <= datetime.now():
+        raise HTTPException(status_code=400, detail="Access request has expire")
+
+    existing.status = "approved"
+
+    session = UserSession(request_id = existing.id, expire_time = existing.expires_at)
+
+    db.add(session)
+    db.commit()
+    db.refresh(session)
+
+    return session
