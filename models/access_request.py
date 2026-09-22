@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Index
 from datetime import datetime
 from database import Base
 
@@ -10,3 +10,12 @@ class AccessRequest(Base):
     status = Column(String, nullable=False, default="pending")
     requested_at = Column(DateTime, nullable=False, default=datetime.now)
     expires_at = Column(DateTime, nullable=False)
+
+    __table_args__ = (
+    Index(
+        "uq_pending_request_code",
+        "request_code",
+        unique=True,
+        postgresql_where=(status == "pending")
+    ),
+)
