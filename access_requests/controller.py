@@ -22,7 +22,7 @@ def create_access_request(request_data: AccessRequestCreate, db: Session):
 
     isValid_user = verify_password(request_data.group_password, existing.password_hash)
     if not isValid_user:
-        raise HTTPException(status_code=401, detail="Invalid Group code or Password")
+        raise HTTPException(status_code=404, detail="Invalid Group code or Password")
 
     request_code = generate_unique_request_code(db)
 
@@ -59,21 +59,21 @@ def get_pending_requests(db: Session, admin_id):
 def approve_access_request(db: Session, admin_id: int, request_id: int):
     existing = db.query(AccessRequest).filter(AccessRequest.id == request_id).first()
     if not existing:
-        raise HTTPException(status_code=404, detail="Request not exist")
-
-    if existing.status != "pending":
-        raise HTTPException(status_code=400, detail="Request is not pending")
+        raise HTTPException(status_code=404, detail="Request not found")
 
     group = db.query(Group).filter(Group.id == existing.group_id, Group.admin_id == admin_id).first()
     if not group:
-        raise HTTPException(status_code=403, detail="You are not authorized to approve this request")
+        raise HTTPException(status_code=404, detail="Request not found")
+
+    if existing.status != "pending":
+        raise HTTPException(status_code=400, detail="Request is not pending")
 
     if existing.expires_at <= datetime.now():
         raise HTTPException(status_code=400, detail="Access request has expire")
 
     existing.status = "approved"
 
-    session = UserSession(request_id = existing.id, expire_time = existing.expires_at)
+    session = UserSession(request_id = existing.id, expire_time = datetime.now() + timedelta(hours=1))
 
     db.add(session)
     db.commit()

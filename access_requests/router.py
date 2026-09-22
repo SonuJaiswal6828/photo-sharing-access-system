@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import get_db
 from access_requests.schemas import AccessRequestCreate, AccessRequestResponse, PendingAccessRequestResponse
+from sessions.schemas import SessionResponse
 from utils.dependencies import get_current_admin
 from access_requests.controller import (
     create_access_request,
@@ -19,6 +20,6 @@ def create_access(request_data: AccessRequestCreate, db: Session = Depends(get_d
 def control_request(db: Session = Depends(get_db), authorized: int = Depends(get_current_admin)):
     return get_pending_requests(db, authorized)
 
-@router.patch("/{request_id}/approve")
-def capprove_request(request_id: int, db: Session = Depends(get_db), authorized: int = Depends(get_current_admin)):
+@router.patch("/{request_id}/approve", response_model=SessionResponse)
+def approve_request(request_id: int, db: Session = Depends(get_db), authorized: int = Depends(get_current_admin)):
     return approve_access_request(db, authorized, request_id)

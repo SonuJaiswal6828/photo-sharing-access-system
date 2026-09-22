@@ -13,6 +13,8 @@ class AccessRequestResponse(BaseModel):
     expires_at : datetime
     requested_at : datetime
 
+    class Config:
+            from_attributes = True
 
 class PendingAccessRequestResponse(BaseModel):
     id : int
