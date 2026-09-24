@@ -102,3 +102,23 @@ def reject_access_request(db: Session, admin_id: int, request_id: int):
     db.refresh(existing)
 
     return existing
+
+
+def get_request_detail(db: Session, admin_id: int, request_id: int):
+    existing = db.query(AccessRequest).filter(AccessRequest.id == request_id).first()
+    if not existing:
+        raise HTTPException(status_code=404, detail="Request not found")
+
+    group = db.query(Group).filter(Group.id == existing.group_id, Group.admin_id == admin_id).first()
+    if not group:
+        raise HTTPException(status_code=404, detail="Request not found")
+
+    return {
+        "id": existing.id,
+        "group_id": existing.group_id,
+        "group_code": group.group_code,
+        "request_code": existing.request_code,
+        "status": existing.status,
+        "requested_at": existing.requested_at,
+        "expires_at": existing.expires_at
+    }

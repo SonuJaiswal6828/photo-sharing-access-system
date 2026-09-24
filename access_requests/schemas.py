@@ -24,3 +24,15 @@ class PendingAccessRequestResponse(BaseModel):
     status : str
     requested_at : datetime
     expires_at : datetime
+
+class AccessRequestDetailResponse(BaseModel):
+    id: int
+    group_id: int
+    group_code: str
+    request_code: str
+    status: str
+    requested_at: datetime
+    expires_at: datetime
+
+    class Config:
+        from_attributes = True
