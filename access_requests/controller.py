@@ -80,3 +80,25 @@ def approve_access_request(db: Session, admin_id: int, request_id: int):
     db.refresh(session)
 
     return session
+
+
+def reject_access_request(db: Session, admin_id: int, request_id: int):
+    existing = db.query(AccessRequest).filter(AccessRequest.id == request_id).first()
+    if not existing:
+        raise HTTPException(status_code=404, detail="Request not found")
+
+    group = db.query(Group).filter(Group.id == existing.group_id, Group.admin_id == admin_id).first()
+    if not group:
+        raise HTTPException(status_code=404, detail="Request not found")
+
+    if existing.status != "pending":
+        raise HTTPException(status_code=400, detail="Request is not pending")
+
+    if existing.expires_at <= datetime.now():
+        raise HTTPException(status_code=400, detail="Access request has expire")
+
+    existing.status = "rejected"
+    db.commit()
+    db.refresh(existing)
+
+    return existing

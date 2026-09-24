@@ -7,7 +7,8 @@ from utils.dependencies import get_current_admin
 from access_requests.controller import (
     create_access_request,
     get_pending_requests,
-    approve_access_request
+    approve_access_request,
+    reject_access_request
 )
 
 router = APIRouter()
@@ -23,3 +24,7 @@ def control_request(db: Session = Depends(get_db), authorized: int = Depends(get
 @router.patch("/{request_id}/approve", response_model=SessionResponse)
 def approve_request(request_id: int, db: Session = Depends(get_db), authorized: int = Depends(get_current_admin)):
     return approve_access_request(db, authorized, request_id)
+
+@router.patch("/{request_id}/reject", response_model=AccessRequestResponse)
+def reject_request(request_id: int, db: Session = Depends(get_db), authorized: int = Depends(get_current_admin)):
+    return reject_access_request(db, authorized, request_id)
