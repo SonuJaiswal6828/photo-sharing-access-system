@@ -16,3 +16,30 @@ def create_section(section_data: SectionCreate, db: Session, admin_id: int):
     db.refresh(section_object)
 
     return section_object
+
+def update_section(section_id: int, section_data, db: Session, admin_id: int):
+    section = db.query(Section).filter(Section.id == section_id).first()
+    if section is None:
+        raise HTTPException(status_code=404, detail="Section not found")
+
+    group = db.query(Group).filter(Group.id == section.group_id, Group.admin_id == admin_id).first()
+    if group is None:
+        raise HTTPException(status_code=404, detail="Section not found")
+
+    section.name = section_data.name
+    db.commit()
+    db.refresh(section)
+    return section
+
+def delete_section(section_id: int, db: Session, admin_id: int):
+    section = db.query(Section).filter(Section.id == section_id).first()
+    if section is None:
+        raise HTTPException(status_code=404, detail="Section not found")
+
+    group = db.query(Group).filter(Group.id == section.group_id, Group.admin_id == admin_id).first()
+    if group is None:
+        raise HTTPException(status_code=404, detail="Section not found")
+
+    db.delete(section)
+    db.commit()
+    return {"detail": "Section deleted successfully"}

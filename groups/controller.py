@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from groups.schemas import GroupCreate
+from groups.schemas import GroupCreate, GroupUpdate
 from models.group import Group
 from models.section import Section
 from utils.security import hash_password
@@ -38,3 +38,22 @@ def get_group_sections(group_id: int, admin_id: int, db: Session):
 
     sections = db.query(Section).filter(Section.group_id == group_id).all()
     return sections
+
+def update_group(group_id: int, group_data: GroupUpdate, db: Session, admin_id: int):
+    group = db.query(Group).filter(Group.id == group_id, Group.admin_id == admin_id).first()
+    if group is None:
+        raise HTTPException(status_code=404, detail="Group not found")
+
+    group.name = group_data.name
+    db.commit()
+    db.refresh(group)
+    return group
+
+def delete_group(group_id: int, db: Session, admin_id: int):
+    group = db.query(Group).filter(Group.id == group_id, Group.admin_id == admin_id).first()
+    if group is None:
+        raise HTTPException(status_code=404, detail="Group not found")
+
+    db.delete(group)
+    db.commit()
+    return {"detail": "Group deleted successfully"}

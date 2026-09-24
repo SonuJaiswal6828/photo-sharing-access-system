@@ -1,31 +1,22 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 class AccessRequestCreate(BaseModel):
-    group_code : str
-    group_password : str
-
+    group_code: str
+    group_password: str
 
 class AccessRequestResponse(BaseModel):
-    id : int
-    request_code : str
-    status : str
-    expires_at : datetime
-    requested_at : datetime
+    id: int
+    request_code: str
+    status: str
+    expires_at: datetime
+    requested_at: datetime
 
     class Config:
-            from_attributes = True
+        from_attributes = True
 
 class PendingAccessRequestResponse(BaseModel):
-    id : int
-    group_id : int
-    group_code : str
-    request_code : str
-    status : str
-    requested_at : datetime
-    expires_at : datetime
-
-class AccessRequestDetailResponse(BaseModel):
     id: int
     group_id: int
     group_code: str
@@ -34,5 +25,6 @@ class AccessRequestDetailResponse(BaseModel):
     requested_at: datetime
     expires_at: datetime
 
-    class Config:
-        from_attributes = True
+class AccessRequestStatusResponse(BaseModel):
+    status: str
+    session_token: Optional[str] = None

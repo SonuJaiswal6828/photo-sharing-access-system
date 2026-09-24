@@ -44,3 +44,20 @@ def save_photo(photo_data: PhotoSave, db: Session, admin_id: int):
     db.refresh(photo_object)
 
     return photo_object
+
+def delete_photo(photo_id: int, db: Session, admin_id: int):
+    photo = db.query(Photo).filter(Photo.id == photo_id).first()
+    if photo is None:
+        raise HTTPException(status_code=404, detail="Photo not found")
+
+    section = db.query(Section).filter(Section.id == photo.section_id).first()
+    if section is None:
+        raise HTTPException(status_code=404, detail="Photo not found")
+
+    group = db.query(Group).filter(Group.id == section.group_id, Group.admin_id == admin_id).first()
+    if group is None:
+        raise HTTPException(status_code=404, detail="Photo not found")
+
+    db.delete(photo)
+    db.commit()
+    return {"detail": "Photo deleted successfully"}

@@ -13,3 +13,6 @@ class SectionResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class SectionUpdate(BaseModel):
+    name: str

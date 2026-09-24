@@ -13,3 +13,6 @@ class GroupResponse(BaseModel):
     
     class Config:
         from_attributes = True
+
+class GroupUpdate(BaseModel):
+    name: str
