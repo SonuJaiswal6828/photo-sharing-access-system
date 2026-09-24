@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sessions - PhotoShare</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        colors: { bg: '#0a0a0a', card: '#141414', border: '#262626' }
+      }}
+    }
+  </script>
+</head>
+<body class="bg-bg text-gray-100 min-h-screen flex flex-col font-sans antialiased">
+
+  <div id="navbar"></div>
+
+  <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-10">
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-2 text-white">Sessions</h1>
+      <p class="text-gray-400">Manage active photo access sessions</p>
+    </div>
+
+    <!-- Info banner -->
+    <div class="bg-purple-600/10 border border-purple-600/30 rounded-xl p-4 mb-6 flex items-start gap-3">
+      <span class="text-xl">💡</span>
+      <div>
+        <p class="text-sm text-purple-200 font-medium">Sessions expire automatically after 1 hour</p>
+        <p class="text-xs text-gray-400 mt-1">You can revoke any session anytime. Friends will lose access immediately.</p>
+      </div>
+    </div>
+
+    <div id="sessionsList">
+      <div class="spinner"></div>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/navbar.js"></script>
+  <script src="js/footer.js"></script>
+  <script>
+    renderNavbar();
+    renderFooter();
+    requireLogin();
+
+    async function loadSessions() {
+      const list = document.getElementById("sessionsList");
+
+      try {
+        // No dedicated endpoint for listing all sessions.
+        // Workaround: no endpoint, show placeholder.
+        // Backend has GET /session/{id}/status, but we don't know ids.
+        //
+        // For now, show a note. This is a known limitation.
+        list.innerHTML = `
+          <div class="bg-card border border-border rounded-2xl p-16 text-center">
+            <div class="text-5xl mb-4">🔐</div>
+            <h3 class="text-xl font-bold mb-2 text-white">Sessions Overview</h3>
+            <p class="text-gray-400 mb-6 max-w-md mx-auto">
+              Backend doesn't yet have a "list all sessions" endpoint. But you can still:
+            </p>
+            <div class="max-w-md mx-auto text-left space-y-3">
+              <div class="bg-bg border border-border rounded-lg p-4">
+                <p class="text-sm text-gray-300 mb-1">✅ Approve access requests</p>
+                <p class="text-xs text-gray-500">Sessions are created automatically when you approve a request.</p>
+              </div>
+              <div class="bg-bg border border-border rounded-lg p-4">
+                <p class="text-sm text-gray-300 mb-1">✅ Revoke from Pending page</p>
+                <p class="text-xs text-gray-500">After approval, session token is shown. Revoke if needed.</p>
+              </div>
+              <div class="bg-bg border border-border rounded-lg p-4">
+                <p class="text-sm text-gray-300 mb-1">💡 Check session status</p>
+                <p class="text-xs text-gray-500">Use session ID with <code class="bg-white/5 px-1 rounded">GET /session/{id}/status</code></p>
+              </div>
+            </div>
+            <a href="pending.html" class="btn-primary inline-block mt-6">Go to Pending Requests</a>
+          </div>
+        `;
+      } catch (err) {
+        showToast(err.message, "error");
+      }
+    }
+
+    loadSessions();
+  </script>
+</body>
+</html>

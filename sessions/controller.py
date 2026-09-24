@@ -92,3 +92,34 @@ def delete_section(section_id: int, db: Session, admin_id: int):
     db.delete(section)
     db.commit()
     return {"detail": "Section deleted successfully"}
+
+def get_admin_sessions(db: Session, admin_id: int):
+    results = (
+        db.query(UserSession, AccessRequest, Group)
+        .join(AccessRequest, UserSession.request_id == AccessRequest.id)
+        .join(Group, AccessRequest.group_id == Group.id)
+        .filter(Group.admin_id == admin_id)
+        .order_by(UserSession.created_at.desc())
+        .all()
+    )
+    now = datetime.now()
+    sessions = []
+    for s, req, grp in results:
+        if s.revoked_at is not None:
+            status = "revoked"
+        elif now > s.expire_time:
+            status = "expired"
+        else:
+            status = "active"
+        sessions.append({
+            "id": s.id,
+            "session_token": s.session_token,
+            "request_code": req.request_code,
+            "group_code": grp.group_code,
+            "group_name": grp.name,
+            "created_at": s.created_at,
+            "expire_time": s.expire_time,
+            "revoked_at": s.revoked_at,
+            "status": status,
+        })
+    return sessions

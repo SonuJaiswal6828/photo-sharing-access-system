@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up - PhotoShare</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: { bg: '#0a0a0a', card: '#141414', border: '#262626' }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-bg text-gray-100 min-h-screen flex flex-col font-sans antialiased">
+
+  <div id="navbar"></div>
+
+  <main class="flex-1 flex items-center justify-center px-4 py-16">
+    <div class="w-full max-w-md">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-white mb-2">Create account</h1>
+      </div>
+
+      <div class="bg-card border border-border rounded-2xl p-8">
+        <div id="error" class="hidden bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 rounded-lg mb-5"></div>
+
+        <form id="signupForm" class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Username</label>
+            <input type="text" id="username" class="input-field" placeholder="Choose a username" required minlength="3" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+            <input type="password" id="password" class="input-field" placeholder="Create a password" required minlength="6" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Confirm Password</label>
+            <input type="password" id="confirmPassword" class="input-field" placeholder="Re-enter your password" required minlength="6" />
+          </div>
+
+          <button type="submit" id="submitBtn" class="btn-primary w-full">
+            Create Account
+          </button>
+        </form>
+
+        <p class="text-center text-sm text-gray-400 mt-6">
+          Already have an account?
+          <a href="login.html" class="text-purple-400 hover:text-purple-300 font-medium">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/navbar.js"></script>
+  <script src="js/footer.js"></script>
+  <script>
+    renderNavbar();
+    renderFooter();
+
+    if (isLoggedIn()) {
+      window.location.href = "dashboard.html";
+    }
+
+    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("submitBtn");
+      const errorBox = document.getElementById("error");
+      const pwd = document.getElementById("password").value;
+      const confirm = document.getElementById("confirmPassword").value;
+
+      errorBox.classList.add("hidden");
+
+      if (pwd !== confirm) {
+        errorBox.textContent = "Passwords do not match";
+        errorBox.classList.remove("hidden");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Creating account...";
+
+      try {
+        await api.post("/admin/signup", {
+          username: document.getElementById("username").value.trim(),
+          password: pwd,
+        });
+        showToast("Account created! Please login.", "success");
+        setTimeout(() => window.location.href = "login.html", 800);
+      } catch (err) {
+        errorBox.textContent = err.message || "Signup failed";
+        errorBox.classList.remove("hidden");
+        btn.disabled = false;
+        btn.textContent = "Create Account";
+      }
+    });
+  </script>
+</body>
+</html>

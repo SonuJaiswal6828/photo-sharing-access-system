@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from models.group import Group
 from models.section import Section
 from sections.schemas import SectionCreate
+from models.photo import Photo
 
 def create_section(section_data: SectionCreate, db: Session, admin_id: int):
     group = db.query(Group).filter(Group.id == section_data.group_id).first()
@@ -43,3 +44,16 @@ def delete_section(section_id: int, db: Session, admin_id: int):
     db.delete(section)
     db.commit()
     return {"detail": "Section deleted successfully"}
+
+
+def get_section_photos(section_id: int, db: Session, admin_id: int):
+    section = db.query(Section).filter(Section.id == section_id).first()
+    if section is None:
+        raise HTTPException(status_code=404, detail="Section not found")
+
+    group = db.query(Group).filter(Group.id == section.group_id, Group.admin_id == admin_id).first()
+    if group is None:
+        raise HTTPException(status_code=404, detail="Section not found")
+
+    photos = db.query(Photo).filter(Photo.section_id == section_id).all()
+    return photos

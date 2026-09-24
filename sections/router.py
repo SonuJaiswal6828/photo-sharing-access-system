@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import get_db
 from sections.schemas import SectionCreate, SectionResponse, SectionUpdate
-from sections.controller import create_section, update_section, delete_section
+from photos.schemas import PhotoResponse
+from sections.controller import create_section, update_section, delete_section, get_section_photos
 from utils.dependencies import get_current_admin
 
 router = APIRouter()
@@ -18,3 +19,7 @@ def edit_section(section_id: int, section_data: SectionUpdate, db: Session = Dep
 @router.delete("/{section_id}")
 def remove_section(section_id: int, db: Session = Depends(get_db), authorized: int = Depends(get_current_admin)):
     return delete_section(section_id, db, authorized)
+
+@router.get("/{section_id}/photos", response_model=list[PhotoResponse])
+def list_section_photos(section_id: int, db: Session = Depends(get_db), authorized: int = Depends(get_current_admin)):
+    return get_section_photos(section_id, db, authorized)

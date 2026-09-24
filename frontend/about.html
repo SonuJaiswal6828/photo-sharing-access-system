@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About - PhotoShare</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            bg: '#0a0a0a',
+            card: '#141414',
+            border: '#262626',
+            primary: '#8b5cf6',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-bg text-gray-100 min-h-screen flex flex-col font-sans antialiased">
+
+  <div id="navbar"></div>
+
+  <main class="flex-1 max-w-4xl mx-auto py-16 px-4 w-full">
+    <div class="text-center mb-14">
+      <h1 class="text-5xl font-bold mb-4">
+        About <span class="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">PhotoShare</span>
+      </h1>
+      <p class="text-gray-400 text-lg">Secure photo sharing with temporary access control</p>
+    </div>
+
+    <!-- Project -->
+    <div class="bg-card border border-border rounded-xl p-8 mb-6">
+      <h2 class="text-2xl font-bold mb-4 text-white">The Project</h2>
+      <p class="text-gray-400 mb-3 leading-relaxed">
+        PhotoShare is a secure photo sharing platform where admins can organize
+        photos into groups and sections, and grant temporary access to others.
+      </p>
+      <p class="text-gray-400 leading-relaxed">
+        Every access grant creates a 1-hour session that the admin can revoke at any time.
+        Friends request access using a group code and password, and the admin approves or rejects.
+      </p>
+    </div>
+
+    <!-- Developer -->
+    <div class="bg-card border border-border rounded-xl p-8 mb-6 flex flex-col md:flex-row gap-8 items-center">
+      <div class="relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full blur-lg opacity-50"></div>
+        <img src="public/sonu.png" alt="Sonu Jaiswal"
+             class="relative w-40 h-40 rounded-full object-cover border-4 border-purple-600/50" />
+      </div>
+      <div class="flex-1">
+        <h2 class="text-3xl font-bold mb-2 text-white">Sonu Jaiswal</h2>
+        <p class="text-purple-400 mb-5 font-medium">Full Stack Developer</p>
+        <ul class="space-y-2.5 text-sm text-gray-300">
+          <li class="flex items-center gap-3"><span class="text-purple-400">📧</span> sonuj6828@gmail.com</li>
+          <li class="flex items-center gap-3"><span class="text-purple-400">📱</span> 7776839491</li>
+          <li class="flex items-center gap-3"><span class="text-purple-400">📍</span> Vasai East, Maharashtra, India</li>
+        </ul>
+        <div class="flex gap-3 mt-5">
+          <a href="https://github.com/SonuJaiswal6828" target="_blank"
+             class="bg-white/5 border border-white/10 hover:bg-white/10 text-sm px-4 py-2 rounded-lg transition">
+            GitHub
+          </a>
+          <a href="https://sonuj-portfolio.netlify.app" target="_blank"
+             class="bg-white/5 border border-white/10 hover:bg-white/10 text-sm px-4 py-2 rounded-lg transition">
+            Portfolio
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tech Stack -->
+    <div class="bg-card border border-border rounded-xl p-8">
+      <h2 class="text-2xl font-bold mb-6 text-white">Tech Stack</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-semibold text-purple-400 mb-3 flex items-center gap-2">
+            <span class="w-2 h-2 bg-purple-400 rounded-full"></span> Backend
+          </h3>
+          <ul class="text-sm space-y-2 text-gray-400">
+            <li>FastAPI (Python)</li>
+            <li>PostgreSQL + SQLAlchemy</li>
+            <li>JWT Authentication</li>
+            <li>Cloudinary (Image Storage)</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-semibold text-purple-400 mb-3 flex items-center gap-2">
+            <span class="w-2 h-2 bg-purple-400 rounded-full"></span> Frontend
+          </h3>
+          <ul class="text-sm space-y-2 text-gray-400">
+            <li>HTML5 + CSS3</li>
+            <li>Tailwind CSS</li>
+            <li>Vanilla JavaScript</li>
+            <li>Fetch API</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/navbar.js"></script>
+  <script src="js/footer.js"></script>
+  <script>
+    renderNavbar();
+    renderFooter();
+  </script>
+</body>
+</html>
