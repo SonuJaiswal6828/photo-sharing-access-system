@@ -59,7 +59,7 @@
 
         list.innerHTML = `<div class="space-y-3">
           ${requests.map(r => {
-            const isExpired = new Date(r.expires_at) < new Date();
+            const isExpired = new Date(r.expires_at + "Z") < new Date();
             return `
             <div class="bg-card border border-border rounded-xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 ${isExpired ? 'opacity-60' : ''}">
               <div class="flex items-center gap-4">
