@@ -65,7 +65,11 @@ def approve_access_request(db: Session, admin_id: int, request_id: int):
 
     existing.status = "approved"
     session_token = generate_unique_session_token(db)
-    session = UserSession(request_id=existing.id, session_token=session_token, expire_time=datetime.now() + timedelta(hours=1))
+    session = UserSession(
+    request_id=existing.id,
+    session_token=session_token,
+    expire_time=datetime.now(timezone.utc) + timedelta(hours=1)
+    )
 
     db.add(session)
     db.commit()
