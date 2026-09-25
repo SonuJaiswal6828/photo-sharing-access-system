@@ -6,7 +6,7 @@ from models.group import Group
 from models.section import Section
 from models.photo import Photo
 from utils.code_generator import generate_random_code
-from datetime import datetime
+from datetime import datetime, timezone
 
 def generate_unique_session_token(db: Session) -> str:
     while True:
@@ -23,7 +23,7 @@ def session_status(db: Session, session_id: int):
     current = {"status": "active"}
     if existing.revoked_at is not None:
         current["status"] = "revoked"
-     elif datetime.utcnow() > existing.expire_time:
+     elif datetime.now(timezone.utc) > existing.expire_time:
         current["status"] = "expired"
     return current
 
