@@ -93,7 +93,7 @@ def get_request_status(db: Session, request_code: str):
 def cleanup_expired_requests(db: Session):
     expired = db.query(AccessRequest).filter(
         AccessRequest.status == "pending",
-        AccessRequest.expires_at <= datetime.now()
+        AccessRequest.expires_at <= datetime.now(timezone.utc)
     ).all()
     for req in expired:
         req.status = "expired"
