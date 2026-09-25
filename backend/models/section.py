@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, UniqueConstraint
-from datetime import datetime
+from datetime import datetime, timezone
 from database import Base
 
 class Section(Base):
@@ -8,5 +8,6 @@ class Section(Base):
     id =Column(Integer, primary_key=True, autoincrement=True)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
     name = Column(String, nullable=False)
-    created_at = Column(DateTime, nullable=False, default=datetime.now)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+
     __table_args__  = (UniqueConstraint("group_id", "name"),)
