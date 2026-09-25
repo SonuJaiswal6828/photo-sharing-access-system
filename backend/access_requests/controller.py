@@ -26,7 +26,7 @@ def create_access_request(request_data: AccessRequestCreate, db: Session):
         raise HTTPException(status_code=404, detail="Invalid Group code or Password")
 
     request_code = generate_unique_request_code(db)
-    expires_at = datetime.now() + timedelta(minutes=60)
+    expires_at = datetime.utcnow() + timedelta(minutes=60)
 
     request_object = AccessRequest(group_id=existing.id, request_code=request_code, expires_at=expires_at)
     db.add(request_object)
