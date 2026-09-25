@@ -23,7 +23,7 @@ def session_status(db: Session, session_id: int):
     current = {"status": "active"}
     if existing.revoked_at is not None:
         current["status"] = "revoked"
-    elif datetime.now() > existing.expire_time:
+     elif datetime.utcnow() > existing.expire_time:
         current["status"] = "expired"
     return current
 
