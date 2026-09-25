@@ -91,8 +91,8 @@
           <div class="space-y-3">
             ${sessions.map(s => {
               const style = statusStyles[s.status] || statusStyles.active;
-              const created = new Date(s.created_at).toLocaleString();
-              const expires = new Date(s.expire_time).toLocaleString();
+              const created = new Date(s.created_at + "Z").toLocaleString();
+              const expires = new Date(s.expire_time + "Z").toLocaleString();
               return `
                 <div class="bg-card border border-border rounded-xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div class="flex-1">
