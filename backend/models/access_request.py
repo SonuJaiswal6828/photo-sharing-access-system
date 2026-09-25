@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Index
-from datetime import datetime
+from datetime import datetime, timezone
 from database import Base
 
 class AccessRequest(Base):
@@ -8,8 +8,8 @@ class AccessRequest(Base):
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
     request_code = Column(String, nullable=False)
     status = Column(String, nullable=False, default="pending")
-    requested_at = Column(DateTime, nullable=False, default=datetime.now)
-    expires_at = Column(DateTime, nullable=False)
+    requested_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+    expires_at = Column(DateTime(timezone=True), nullable=False)
 
     __table_args__ = (
     Index(
