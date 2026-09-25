@@ -40,7 +40,7 @@ def revoke_session(db: Session, admin_id: int, session_id: int):
     if group is None:
         raise HTTPException(status_code=404, detail="Session not found")
 
-    session.revoked_at = datetime.now()
+    session.revoked_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(session)
     return session
@@ -53,7 +53,7 @@ def get_session_photos(db: Session, session_token: str):
     if session.revoked_at is not None:
         raise HTTPException(status_code=403, detail="Session revoked")
 
-    if datetime.now() > session.expire_time:
+    if datetime.now(timezone.utc) > session.expire_time:
         raise HTTPException(status_code=403, detail="Session expired")
 
     request = db.query(AccessRequest).filter(AccessRequest.id == session.request_id).first()
@@ -102,7 +102,7 @@ def get_admin_sessions(db: Session, admin_id: int):
         .order_by(UserSession.created_at.desc())
         .all()
     )
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     sessions = []
     for s, req, grp in results:
         if s.revoked_at is not None:
