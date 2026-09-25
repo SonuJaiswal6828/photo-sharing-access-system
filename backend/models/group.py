@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-from datetime import datetime
+from datetime import datetime, timezone
 from database import Base
 
 class Group(Base):
@@ -10,4 +10,4 @@ class Group(Base):
     admin_id = Column(Integer, ForeignKey("admins.id"), nullable=False)
     name = Column(String, nullable=False)
     password_hash = Column(String, nullable=False)
-    created_at = Column(DateTime, nullable=False, default=datetime.now)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
