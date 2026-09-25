@@ -8,4 +8,4 @@ class Admin(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String,unique=True, nullable=False)
     password_hash = Column(String, nullable=False)
-    created_at = Column(DateTime, nullable=False, default=datetime.now)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
