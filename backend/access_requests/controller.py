@@ -60,7 +60,7 @@ def approve_access_request(db: Session, admin_id: int, request_id: int):
     if existing.status != "pending":
         raise HTTPException(status_code=400, detail="Request is not pending")
 
-    if existing.expires_at <= datetime.now():
+    if existing.expires_at <= datetime.now(timezone.utc):
         raise HTTPException(status_code=400, detail="Access request has expired")
 
     existing.status = "approved"
